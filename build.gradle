@@ -1,11 +1,20 @@
 plugins {
   id "org.gradle.kotlin.embedded-kotlin" version "1.2.5"
+  id "maven-publish"
   id "org.jetbrains.dokka" version "0.9.17"
   id "com.jfrog.bintray" version "1.8.4"
 }
 
-group = "org.socialgorithm"
-version = "0.0.1"
+ext {
+  groupId = 'org.socialgorithm'
+  artifactId = 'game-server'
+  version = '0.0.5'
+  vcsUrl = 'https://github.com/socialgorithm/game-server-jvm'
+  description = 'Socialgorithm Game Server for Socialgorithm Tournaments'
+}
+
+group = 'org.socialgorithm'
+version = '0.0.5'
 
 repositories {
   jcenter()
@@ -15,21 +24,59 @@ dependencies {
   implementation("com.corundumstudio.socketio:netty-socketio:1.5.0")
 }
 
+def pomConfig = {
+    licenses {
+        license {
+            name "GNU Affero General Public License, Version 3"
+            url "https://www.gnu.org/licenses/agpl-3.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            name "Socialgorithm"
+            email "hello@socialgorithm.org"
+        }
+    }
+    
+    scm {
+       url "https://github.com/socialgorithm/game-server-jvm"
+    }
+}
+
+publishing {
+    publications {
+        MavenPOM(MavenPublication) {
+            from components.java
+            groupId "${project.groupId}"
+            artifactId "${project.artifactId}"
+            version "${project.version}"
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', "${project.description}")
+                root.appendNode('name', "${project.artifactId}")
+                root.appendNode('url', "${project.vcsUrl}")
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 bintray {
   user = properties.getProperty("bintray.user")
   key = properties.getProperty("bintray.apikey")
-  configurations = ['archives']
+  publications = [ 'MavenPOM' ]
   pkg {
     userOrg = 'socialgorithm'
-    repo = 'org.socialgorithm'
-    name = 'game-server-jvm'
+    repo = "${project.groupId}"
+    name = "${project.artifactId}"
+    vcsUrl = "${project.vcsUrl}"
     licenses = ['AGPL-V3']
     version {
-      name = '0.0.1'
-      desc = 'Socialgorithm Game Server for JVM platform'
+      name = "${project.version}"
     }
   }
 }
