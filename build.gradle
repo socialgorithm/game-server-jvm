@@ -1,8 +1,11 @@
 plugins {
   id "org.gradle.kotlin.embedded-kotlin" version "1.2.5"
-  id 'maven-publish'
   id "org.jetbrains.dokka" version "0.9.17"
+  id "com.jfrog.bintray" version "1.8.4"
 }
+
+group = "org.socialgorithm"
+version = "0.0.1"
 
 repositories {
   jcenter()
@@ -10,6 +13,25 @@ repositories {
 
 dependencies {
   implementation("com.corundumstudio.socketio:netty-socketio:1.5.0")
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+  user = properties.getProperty("bintray.user")
+  key = properties.getProperty("bintray.apikey")
+  configurations = ['archives']
+  pkg {
+    userOrg = 'socialgorithm'
+    repo = 'org.socialgorithm'
+    name = 'game-server-jvm'
+    licenses = ['AGPL-V3']
+    version {
+      name = '0.0.1'
+      desc = 'Socialgorithm Game Server for JVM platform'
+    }
+  }
 }
 
 tasks.dokka {

@@ -1,3 +1,5 @@
+package org.socialgorithm
+
 data class GameInfoMessage(val name: String)
 
 data class StartGameMessage(val players: List<Player>)

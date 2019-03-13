@@ -1,3 +1,5 @@
+package org.socialgorithm
+
 import com.corundumstudio.socketio.Configuration
 import com.corundumstudio.socketio.SocketIOClient
 import com.corundumstudio.socketio.SocketIOServer

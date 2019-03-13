@@ -1,3 +1,5 @@
+package org.socialgorithm
+
 object GameSocketMessage {
   const val GAME_INFO = "GAME_INFO"
   const val GAME_ENDED = "GAME_ENDED"
